@@ -1,6 +1,8 @@
 import config, {nodeEnv} from './config';
 import express from 'express';
+import path from 'path';
 import apiRouter from './api/index'
+import sassMiddleware from 'node-sass-middleware';
 
 const server = express();
 
@@ -13,6 +15,11 @@ server.get('/', (req, res) => {
         unescapedContent: 'unescaped <em>content</em>'
     });
 });
+
+server.use(sassMiddleware({
+    src: path.join(__dirname, 'sass'),
+    dest: path.join(__dirname, 'public')
+}));
 
 server.use('/api', apiRouter);
 
