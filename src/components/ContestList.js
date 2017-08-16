@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 
 import ContestPreview from './ContestPreview';
 
@@ -7,7 +7,7 @@ function ContestList({contests, onContestClick}) {
         <div className="ContestList">
             {contests.map(contest =>
                 <ContestPreview
-                    onCLick={onContestClick}
+                    onClick={onContestClick}
                     key={contest.id}
                     {...contest}
                 />
@@ -17,8 +17,8 @@ function ContestList({contests, onContestClick}) {
 }
 
 ContestList.propTypes = {
-    contests: React.PropTypes.array.isRequired,
-    onContestClick: React.PropTypes.func.isRequired
+    contests: PropTypes.array.isRequired,
+    onContestClick: PropTypes.func.isRequired
 }
 
 export default ContestList;

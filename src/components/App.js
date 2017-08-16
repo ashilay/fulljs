@@ -4,7 +4,9 @@ import Header from './Header';
 
 import ContestList from './ContestList';
 
-import axios from 'axios';
+import Contest from './Contest';
+
+import {fetchContest, fetchAllContests} from '../api';
 
 const pushState = (obj, url) => {
     window.history.pushState(obj, '', url);
@@ -16,27 +18,49 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('api/contests')
-            .then(({data}) => {
+        fetchAllContests()
+            .then((contests) => {
                 this.setState({
-                    contests: data.contests
+                    contests
                 });
             })
             .catch(console.error);
     }
 
-    fetchContest(id) {
-        pushState({currentContestId: id}, `/contest/${id}`);
+    fetchContest = (contestId) => {
+        pushState({currentContestId: contestId}, `/contest/${contestId}`);
+
+        fetchContest(contestId)
+            .then((contest) => {
+                const contests = [...this.state.contests];
+                Object.assign(
+                    contests.find(({id}) => id === contestId),
+                    contest
+                );
+
+                this.setState({
+                    pageHeader: contest.contestName,
+                    currentContestId: contest.id,
+                    contests
+                });
+            });
+    }
+
+    currentContent() {
+        if (this.state.currentContestId) {
+            return <Contest {...this.state.contests.find(({id}) => id === this.state.currentContestId)}/>
+        }
+        return (<ContestList
+                    onContestClick={this.fetchContest}
+                    contests={this.state.contests}
+                />);
     }
 
     render() {
         return (
             <div className="App">
                 <Header message = {this.state.pageHeader} />
-                <ContestList
-                    onContestClick={this.fetchContest}
-                    contests={this.state.contests}
-                />
+                {this.currentContent()}
             </div>
         )
     }

@@ -10,6 +10,17 @@ router.get('/contests', (req, res) => {
     });
 });
 
+router.get('/contests/:contestId', (req, res) => {
+    const contest = data.contests.find(requestedContest);
+
+    function requestedContest({id}) {
+        return id === +req.params.contestId;
+    }
+
+    contest.description = 'contest description';
+    res.send(contest);
+});
+
 router.get('/user', (req, res) => {
     res.send({
         data: userData
